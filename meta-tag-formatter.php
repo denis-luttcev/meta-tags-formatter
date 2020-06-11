@@ -10,27 +10,37 @@
 // Need add namespace attributes into <html> tag in header.php of theme:
 // (itemscope itemtype="https://schema.org/Article" prefix="article: https://ogp.me/ns/article# og: https://ogp.me/ns# fb: https://ogp.me/ns/fb#")
 // and add (itemprop="name" ) into <h1> tag in content-single.php of theme.
-// define('FB_ADMINS', '100003904247343'); // Use actual FB-page ID
+// define('FB_ADMINS', '000000000000000'); // Use actual FB-page ID
+// Need activated WP Typograph Lite plugin.
 
 // h1 formatter
 function h1_formatter($title) {
 	if ( is_single() ) {
 		return '<span itemprop="headline">'.$title.'</span>';
 	}
+	
 	return $title;
 }
+
 add_filter ( 'the_title', 'h1_formatter' );
+
+
 // Title formatter (from h1)
 add_filter( 'document_title_separator', function(){ return '|'; } );
+
 function title_formatter($title) {
 	if ( is_single() && has_secondary_title() ) {
 		$secondary_title = html_entity_decode(stripslashes(get_secondary_title()));
 		return $secondary_title.' | '.get_bloginfo();
 	}
+	
 	return $title;
 }
+
 add_filter( 'pre_get_document_title', 'title_formatter' );
+
 add_filter( 'pre_get_document_title', 'typoFilterHeader' );
+
 function og_title_formatter($title) {
 	if ( is_single() ) {
 		$title = str_replace('<span itemprop="headline">', '', $title);
@@ -39,13 +49,15 @@ function og_title_formatter($title) {
 			return substr(str_replace("<span class='unvisible'> | <span itemprop='alternativeHeadline' class='subhead'>", ' | ', $title), 0);
 		}
 	}
+	
 	return $title;
 }
+
 // Meta-tags formatter
 function my_meta_tags( ) {
 	if ( is_single() ) {
 		if (have_posts()) : while (have_posts()) : the_post();
-			// Description from Acticle Lead
+			// Description from acticle's Lead
 			$description = wp_trim_excerpt();
 			$description = substr( $description, 26, strpos( $description, '</p>' ) - 26);
 			if ($description != '') {	
@@ -97,5 +109,6 @@ function my_meta_tags( ) {
 		return;
 	}
 }
+
 add_action( 'wp_head', 'my_meta_tags' );
- ?>
+?>
